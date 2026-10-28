@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Bot, Send } from "lucide-react";
 import { askAssistant } from "@/lib/api";
+import MarkdownContent from "@/components/MarkdownContent";
 
 const EXAMPLES = [
   "How many open claims do we have by state and line?",
@@ -87,7 +88,7 @@ export default function AssistantTab() {
           ) : e.a === null ? (
             <p className="text-sm text-muted-foreground">Agent is working…</p>
           ) : (
-            <pre className="whitespace-pre-wrap text-sm font-sans text-foreground/90">{e.a}</pre>
+            <MarkdownContent className="text-sm leading-relaxed text-foreground/90">{e.a}</MarkdownContent>
           )}
         </div>
       ))}

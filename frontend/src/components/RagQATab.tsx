@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Search, Send, Sparkles, MessageSquare, Clock, Trash2 } from "lucide-react";
 import { askQuestion } from "@/lib/api";
+import MarkdownContent from "@/components/MarkdownContent";
 
 const EXAMPLE_QUERIES = [
   "What are the settlement authority limits for each adjuster level?",
@@ -161,7 +162,7 @@ export default function RagQATab() {
                       <div className="ml-11 p-5 rounded-xl bg-muted/40 border border-border/50 shadow-sm relative group overflow-hidden">
                         <div className="absolute top-0 left-0 w-1 h-full bg-primary/20 group-hover:bg-primary/50 transition-colors" />
                         <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/70 mb-3 ml-1">Verified Answer</p>
-                        <p className="text-sm text-card-foreground leading-relaxed whitespace-pre-wrap">{h.answer}</p>
+                        <MarkdownContent className="text-sm leading-relaxed text-card-foreground">{h.answer}</MarkdownContent>
                       </div>
                     ) : h.error ? (
                       <div className="ml-11 p-4 rounded-lg bg-destructive/5 border border-destructive/20">

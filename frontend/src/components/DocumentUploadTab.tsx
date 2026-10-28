@@ -52,6 +52,8 @@ export default function DocumentUploadTab() {
   const isAnyUploading = stagedFiles.some((f) => f.status.state === "uploading");
   const hasIdle = stagedFiles.some((f) => f.status.state === "idle");
   const allDone = stagedFiles.length > 0 && stagedFiles.every((f) => f.status.state !== "idle" && f.status.state !== "uploading");
+  const completedFiles = stagedFiles.filter((f) => f.status.state === "done" || f.status.state === "skipped" || f.status.state === "error").length;
+  const uploadProgress = stagedFiles.length > 0 ? (completedFiles / stagedFiles.length) * 100 : 0;
 
   const addFiles = useCallback((incoming: FileList | null) => {
     if (!incoming) return;
@@ -274,7 +276,7 @@ export default function DocumentUploadTab() {
                       <button
                         onClick={handleIngest}
                         disabled={isAnyUploading}
-                        className="w-full relative group flex items-center justify-center gap-2.5 px-6 py-4 rounded-xl bg-primary text-primary-foreground text-sm font-bold transition-all hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed shadow-xl shadow-primary/20 overflow-hidden"
+                        className="w-full relative group flex items-center justify-center gap-2.5 px-6 py-4 rounded-xl bg-gradient-to-r from-primary via-fuchsia-500 to-accent text-primary-foreground text-sm font-bold transition-all hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed shadow-xl shadow-primary/25 overflow-hidden"
                       >
                         <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform" />
                         {isAnyUploading ? (
@@ -283,6 +285,28 @@ export default function DocumentUploadTab() {
                           <><Play className="w-5 h-5 fill-current" /> Initialize Ingestion ({stagedFiles.filter(f => f.status.state === "idle").length} Files)</>
                         )}
                       </button>
+                    )}
+
+                    {isAnyUploading && (
+                      <div className="rounded-xl border border-primary/20 bg-primary/5 p-4">
+                        <div className="mb-2 flex items-center justify-between text-xs font-medium">
+                          <span className="text-muted-foreground">Batch progress</span>
+                          <span className="text-primary">{completedFiles} of {stagedFiles.length} complete</span>
+                        </div>
+                        <div
+                          className="h-2 overflow-hidden rounded-full bg-muted/80"
+                          aria-label="Batch upload progress"
+                          aria-valuemin={0}
+                          aria-valuemax={stagedFiles.length}
+                          aria-valuenow={completedFiles}
+                          role="progressbar"
+                        >
+                          <div
+                            className="h-full rounded-full bg-gradient-to-r from-primary via-fuchsia-500 to-accent transition-all duration-500 ease-out animate-progress-glow"
+                            style={{ width: `${uploadProgress}%` }}
+                          />
+                        </div>
+                      </div>
                     )}
 
                     {allDone && !hasIdle && (

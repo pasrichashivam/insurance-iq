@@ -29,6 +29,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import MarkdownContent from "@/components/MarkdownContent";
 
 const DEFAULT_REQUEST = `Underwrite submission SUB-DEMO-03
 
@@ -366,7 +367,7 @@ export default function UnderwriterTab() {
                           {isExpanded && ph.content && (
                             <div className="ml-[42px] mr-2 mb-2 animate-fade-in">
                               <div className="max-h-[220px] overflow-y-auto rounded-lg border bg-background/80 p-4 shadow-inner">
-                                <pre className="whitespace-pre-wrap font-mono text-xs leading-relaxed text-muted-foreground">{ph.content}</pre>
+                                <MarkdownContent className="text-xs leading-relaxed text-muted-foreground">{ph.content}</MarkdownContent>
                               </div>
                             </div>
                           )}
@@ -482,7 +483,7 @@ export default function UnderwriterTab() {
               {memo ? (
                 <div className="relative flex-1 w-full mt-4">
                   <div className="absolute inset-0 rounded-lg border bg-muted/20 p-5 shadow-inner overflow-y-auto animate-slide-in-right">
-                    <pre className="whitespace-pre-wrap font-mono text-[13px] leading-[1.75] text-card-foreground">{memo}</pre>
+                    <MarkdownContent className="text-[13px] leading-[1.75] text-card-foreground">{memo}</MarkdownContent>
                   </div>
                 </div>
               ) : error ? (
