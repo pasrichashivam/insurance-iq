@@ -137,17 +137,6 @@ def run_audit(payload: AuditRequest):
         log.exception("Claims review failed")
         raise HTTPException(status_code=500, detail=str(e))
 
-
-@agent_router.get("/underwriting/submissions")
-def list_underwriting_submissions():
-    """Demo / pending submissions shown as quick picks in the Underwriter Navigator."""
-    from agent import insurance_db
-    return {"submissions": insurance_db.query(
-        "SELECT submission_id, applicant, line, state, industry, total_insured_value, status, "
-        "CASE WHEN customer_id IS NULL THEN 'NEW BUSINESS' ELSE 'RENEWAL / EXISTING' END AS business_type "
-        "FROM underwriting_submissions WHERE submission_id LIKE 'SUB-DEMO-%' ORDER BY submission_id")}
-
-
 @agent_router.post("/underwriting", response_model=UnderwritingResponse)
 def run_underwriting(payload: UnderwritingRequest):
     """Underwriter Navigator: risk, pricing, loss history, HITL referral gate and the Underwriters Memo."""
@@ -163,7 +152,7 @@ def run_underwriting(payload: UnderwritingRequest):
 
 
 @agent_router.post("/underwriting/review", response_model=UnderwritingResponse)
-def review_underwriting(payload: UnderwritingReviewRequest):
+def review_underwriting_hitl(payload: UnderwritingReviewRequest):
     """Human-in-the-loop: approve, edit or reject the pending referral, then the memo is written."""
     try:
         return UnderwritingResponse(**get_underwriter().resume(

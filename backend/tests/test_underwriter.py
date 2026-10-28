@@ -101,4 +101,3 @@ def test_api_endpoints(monkeypatch, navigator):
     second = client.post("/api/agent/underwriting/review", json={"thread_id": first["thread_id"], "decision": "approve"}).json()
     assert second["underwriter_memo"] == "MEMO API"
     assert client.post("/api/agent/underwriting", json={"request_text": "no id"}).status_code == 400
-    assert len(client.get("/api/agent/underwriting/submissions").json()["submissions"]) == 5

@@ -102,7 +102,7 @@ const Index = () => {
                 </div>
               </div>
               <div className="hidden rounded-full border border-primary/25 bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary sm:block">
-                AI-powered intelligence
+                Insurance Intelligence
               </div>
             </div>
           </header>

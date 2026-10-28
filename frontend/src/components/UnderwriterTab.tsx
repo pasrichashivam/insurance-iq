@@ -19,7 +19,6 @@ import {
 import {
   runUnderwriting,
   reviewUnderwriting,
-  listUnderwritingSubmissions,
   type UnderwritingResult,
   type UnderwritingSubmission,
 } from "@/lib/api";
@@ -67,12 +66,6 @@ export default function UnderwriterTab() {
   const [authority, setAuthority] = useState("SENIOR UNDERWRITER");
   const [reason, setReason] = useState("");
   const [comment, setComment] = useState("");
-
-  useEffect(() => {
-    listUnderwritingSubmissions()
-      .then((d) => setSamples(d.submissions))
-      .catch(() => setSamples([]));
-  }, []);
 
   const memo = result?.underwriter_memo ?? null;
   const pending = result?.status === "PENDING_REVIEW" ? result.pending_review : null;

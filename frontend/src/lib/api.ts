@@ -140,10 +140,6 @@ export interface UnderwritingSubmission {
   business_type: string;
 }
 
-export async function listUnderwritingSubmissions() {
-  return request<{ submissions: UnderwritingSubmission[] }>("/api/agent/underwriting/submissions");
-}
-
 export async function runUnderwriting(requestText: string) {
   return request<UnderwritingResult>("/api/agent/underwriting", {
     method: "POST",
