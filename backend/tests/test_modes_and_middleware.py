@@ -55,12 +55,25 @@ def test_cloud_mode_lists_missing_settings(monkeypatch):
 def test_missing_api_key_gives_503_not_500(monkeypatch):
     from rag import llm
 
-    monkeypatch.setattr(settings, "GOOGLE_API_KEY", "")
+    monkeypatch.setattr(settings, "OPENAI_API_KEY", "")
     llm.get_llm.cache_clear()
     try:
         res = client.post("/api/rag/ask", json={"query": "hi"})
         assert res.status_code == 503
-        assert "GOOGLE_API_KEY" in res.json()["detail"]
+        assert "OPENAI_API_KEY" in res.json()["detail"]
+    finally:
+        llm.get_llm.cache_clear()
+
+
+def test_gemini_provider_needs_google_key(monkeypatch):
+    from rag import llm
+
+    monkeypatch.setattr(settings, "llm_provider", "gemini")
+    monkeypatch.setattr(settings, "GOOGLE_API_KEY", "")
+    llm.get_llm.cache_clear()
+    try:
+        with pytest.raises(ConfigurationError, match="GOOGLE_API_KEY"):
+            llm.get_llm()
     finally:
         llm.get_llm.cache_clear()
 

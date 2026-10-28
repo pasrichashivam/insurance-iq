@@ -31,9 +31,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import MarkdownContent from "@/components/MarkdownContent";
 
-const DEFAULT_REQUEST = `Underwrite submission SUB-DEMO-03
-
-Context: Existing Cardinal Ridge workers' comp customer (roofing contractor, NY) is requesting general liability. Assess the risk, recommend pricing, check loss history and flag for manual review if required.`;
+const DEFAULT_REQUEST = `Underwrite submission SUB-DEMO-03.`;
 
 const PHASE_NAMES = ["Application & Risk", "Loss History", "Referral Desk (HITL)", "Underwriters Memo"] as const;
 

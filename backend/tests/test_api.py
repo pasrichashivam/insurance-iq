@@ -16,7 +16,7 @@ def test_status_reports_local_mode_without_calling_gcp():
     body = client.get("/api/status").json()
     assert body["mode"] == "local"
     assert body["vector_search"]["backend"] == "Chroma (local disk)"
-    assert body["models"]["embedding"] == "gemini-embedding-001"
+    assert body["models"]["embedding"] == "text-embedding-3-small"
 
 
 def test_unknown_api_route_is_404():

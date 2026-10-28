@@ -2,10 +2,11 @@
 
 THE LOCAL <-> CLOUD TOGGLE
 --------------------------
-    APP_MODE=local   (default)  Runs on your laptop with ONLY a Gemini API key.
+    APP_MODE=local   (default)  Runs on your laptop with ONLY an OpenAI (default) or Gemini API key.
+                                Choose the provider with LLM_PROVIDER=openai|gemini.
                                 Vectors  -> Chroma, saved in ./.insurance_iq/chroma
                                 Files    -> ./.insurance_iq/uploads
-                                Embeddings -> Gemini API (API key)
+                                Embeddings -> OpenAI or Gemini API (API key)
                                 No Google Cloud project, bucket or service account needed.
 
     APP_MODE=cloud              Runs against Google Cloud (what Cloud Run uses).
@@ -20,7 +21,7 @@ import os
 from pathlib import Path
 from typing import Literal
 
-from pydantic import Field, model_validator
+from pydantic import AliasChoices, Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # Project root = two levels above backend/config/
@@ -41,18 +42,30 @@ class Settings(BaseSettings):
     # --- The toggle ---
     app_mode: Literal["local", "cloud"] = Field("local", validation_alias="APP_MODE")
 
-    # --- Gemini (used in BOTH modes for the chat model) ---
+    # --- LLM provider: "openai" (default) or "gemini" ---
+    llm_provider: Literal["openai", "gemini"] = Field("openai", validation_alias="LLM_PROVIDER")
+    OPENAI_API_KEY: str = Field("", validation_alias="OPENAI_API_KEY")
+    # Responses API works with tools for reasoning models; set false for plain chat-completions models
+    openai_use_responses_api: bool = Field(True, validation_alias="OPENAI_USE_RESPONSES_API")
+    # Optional (e.g. low / medium / high); empty = model default
+    openai_reasoning_effort: str = Field("", validation_alias="OPENAI_REASONING_EFFORT")
+    # Unset = not sent (reasoning models reject it). Set for non-reasoning models, e.g. 0.0
+    openai_temperature: float | None = Field(None, validation_alias="OPENAI_TEMPERATURE")
     GOOGLE_API_KEY: str = Field("", validation_alias="GOOGLE_API_KEY")
-    llm_model_name: str = Field("gemini-3.8-flash", validation_alias="VERTEX_LLM_MODEL_NAME")
+    # Empty = provider default (gpt-4o-mini / gemini-3.8-flash)
+    llm_model_name: str = Field(
+        "", validation_alias=AliasChoices("LLM_MODEL_NAME", "VERTEX_LLM_MODEL_NAME")
+    )
     # 0 = most repeatable answers. If the model loops or repeats itself, try 1.0 (Gemini 3 default)
     llm_temperature: float = Field(0.0, validation_alias="LLM_TEMPERATURE")
 
     # --- Embeddings ---
     # Cloud: Vertex AI model. Must output 768 dims to match the Vector Search index.
     embedding_model_name: str = Field("text-embedding-005", validation_alias="VERTEX_EMBEDDING_MODEL_NAME")
-    # Local: Gemini API model (API key). Chroma has no fixed size, 768 keeps both modes alike.
-    local_embedding_model_name: str = Field("gemini-embedding-001", validation_alias="LOCAL_EMBEDDING_MODEL_NAME")
-    embedding_dimensions: int = 768
+    # Local: follows LLM_PROVIDER. Empty = provider default (text-embedding-3-small / gemini-embedding-001).
+    # Chroma has no fixed size, 768 keeps all modes alike.
+    local_embedding_model_name: str = Field("", validation_alias="LOCAL_EMBEDDING_MODEL_NAME")
+    embedding_dimensions: int = 1536
 
     # --- Local mode storage ---
     local_data_dir: str = Field(str(PROJECT_ROOT / ".insurance_iq"), validation_alias="LOCAL_DATA_DIR")
@@ -83,6 +96,11 @@ class Settings(BaseSettings):
         # Vertex AI Vector Search expects the prefix to end with "/"
         if self.GCS_PREFIX and not self.GCS_PREFIX.endswith("/"):
             self.GCS_PREFIX += "/"
+        gemini = self.llm_provider == "gemini"
+        if not self.llm_model_name:
+            self.llm_model_name = "gemini-3.8-flash" if gemini else "gpt-4o-mini"
+        if not self.local_embedding_model_name:
+            self.local_embedding_model_name = "gemini-embedding-001" if gemini else "text-embedding-3-small"
         return self
 
     # --- Convenience ---

@@ -80,7 +80,7 @@ export default function RagQATab() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleAsk(); } }}
-            placeholder="e.g. What is the EU import duty rate for servo motors from Japan?"
+            placeholder="e.g. What are the settlement authority limits for each adjuster level?"
           />
           <div className="flex items-center justify-between mt-3">
             <span className="text-xs text-muted-foreground">Enter to send · Shift+Enter for newline</span>

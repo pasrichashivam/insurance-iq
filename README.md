@@ -343,3 +343,20 @@ answers, check that the generated query matches the question (tables, filters, `
 - AI output is decision support. A licensed human must decide coverage, denial and fraud referrals.
 - Fraud score weights are illustrative heuristics, not a validated model; check for fairness/bias before real use.
 - The original procurement-audit write-up in `README.md` / `docs/` describes the base architecture this edition builds on.
+
+Get information for claim CLM-DEMO-05 I need to get below information.
+1. Claim id, policy_id, customer_id, policy inception date, loss_date, reported_date, vendor id, vendor name (separate columns)
+2. Number of days between policy inception and loss occurred.
+2. Number of days between loss occurred and loss reported.
+3. Claim amount
+4. Count of SIU referred for a vendor associated with this claim
+5. Description
+6. How many more claims the customer of this claim is linked to in last 24 months.
+
+Claim Review:
+Review claim CLM-2026-001610
+Review claim CLM-DEMO-04
+
+Underwriter Navigator:
+
+HITL: Underwrite submission SUB-DEMO-04 and tell me if reinsurance must be notified. Escalate to the right authority.

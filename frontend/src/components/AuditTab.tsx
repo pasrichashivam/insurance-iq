@@ -22,10 +22,7 @@ import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import MarkdownContent from "@/components/MarkdownContent";
 
-const DEFAULT_REQUEST = `Review claim CLM-DEMO-01
-
-Context: Auto collision claim, Texas, submitted through a repair shop. Please check coverage, fraud indicators and state compliance, and recommend a decision.
-Other demo claims to try: CLM-DEMO-02 (FL flood), CLM-DEMO-03 (CA glass), CLM-DEMO-04 (IL commercial fire), CLM-DEMO-05 (NY workers comp), CLM-DEMO-06 (OH cancelled policy).`;
+const DEFAULT_REQUEST = `Review claim CLM-DEMO-01`;
 
 interface Phase {
   name: string;
