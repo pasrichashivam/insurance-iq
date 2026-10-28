@@ -1,0 +1,4 @@
+cat_code,name,peril,state,event_date,claim_count,incurred_estimate
+CAT-2025-HURR-FL,Hurricane Marisol (FL),HURRICANE,FL,2025-09-12,21,543050.13
+CAT-2025-HURR-TX,Hurricane Marisol (TX),HURRICANE,TX,2025-09-14,17,354126.9
+CAT-2026-HAIL-TX,Spring Hail Outbreak (TX),HAIL,TX,2026-04-18,4,10685.38

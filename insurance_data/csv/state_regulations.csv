@@ -1,0 +1,7 @@
+state,ack_days,decision_days,payment_days,day_unit,statute,late_interest_rate,notes
+TX,15,15,5,business,Tex. Ins. Code ch. 542 (Prompt Payment of Claims Act),0.18,Penalty interest 18%/yr plus attorney fees for late payment.
+FL,7,60,60,calendar,Fla. Stat. 627.70131 / 626.9541,0.12,Pay or deny within 60 days of notice; statutory interest on late payment.
+CA,15,40,30,calendar,"Cal. Code Regs. tit. 10, 2695.5 and 2695.7",0.1,Accept/deny within 40 days of proof of claim; pay within 30 days of acceptance.
+NY,15,15,5,business,"N.Y. Comp. Codes R. & Regs. tit. 11, part 216 (Reg. 64)",0.09,Decision within 15 business days of proof of loss; 9% statutory interest.
+OH,15,21,10,calendar,Ohio Adm. Code 3901-1-54,0.05,Decision within 21 days of proof of loss; payment within 10 days of settlement.
+IL,10,30,30,business,215 ILCS 5/154.6 and 50 Ill. Adm. Code 919,0.09,Acknowledge within 10 working days; 9% interest plus penalties for vexatious delay.

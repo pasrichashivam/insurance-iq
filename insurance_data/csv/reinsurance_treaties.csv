@@ -1,0 +1,4 @@
+treaty_id,name,type,line,retention,limit_amount,cession_pct,notice_threshold,term_year
+RI-2026-PROP-XOL,Property Catastrophe Excess of Loss,XOL,"HOME,COMM_PROPERTY",5000000.0,100000000.0,1.0,500000.0,2026
+RI-2026-AUTO-QS,Auto Quota Share,QUOTA_SHARE,AUTO,0.0,0.0,0.2,1000000.0,2026
+RI-2026-CASUALTY-XOL,Casualty Excess of Loss (GL/WC),XOL,"GL,WC",1000000.0,24000000.0,1.0,500000.0,2026

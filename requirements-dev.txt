@@ -1,0 +1,4 @@
+-r requirements.txt
+pytest==8.4.2
+httpx==0.28.1                   # used by FastAPI's TestClient
+reportlab>=4.0                  # only for insurance_data/generate_pdfs.py

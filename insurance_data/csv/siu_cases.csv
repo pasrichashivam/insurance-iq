@@ -1,0 +1,60 @@
+case_id,claim_id,vendor_id,opened_date,status,outcome,indicators
+SIU-0001,CLM-2025-001546,VND-901,2025-02-12,CLOSED,CLAIM_DENIED_MISREPRESENTATION,Late reporting; Inflated repair estimate; Inconsistent statements
+SIU-0002,CLM-2026-001548,VND-901,2026-03-14,OPEN,OPEN,Late reporting; Duplicate invoice; Inflated repair estimate
+SIU-0003,CLM-2026-001550,VND-901,2026-09-21,CLOSED,UNFOUNDED,Staged-accident pattern; Duplicate invoice; Inconsistent statements
+SIU-0004,CLM-2026-001553,VND-901,2026-07-25,CLOSED,CLAIM_DENIED_MISREPRESENTATION,Inconsistent statements; No police report; Prior similar claims
+SIU-0005,CLM-2025-001554,VND-901,2025-09-24,CLOSED,REFERRED_TO_STATE_DOI,Loss shortly after inception; Inflated repair estimate; Duplicate invoice
+SIU-0006,CLM-2026-001556,VND-901,2026-10-01,OPEN,OPEN,Staged-accident pattern; Prior similar claims; Inflated repair estimate
+SIU-0007,CLM-2026-001557,VND-901,2026-08-21,CLOSED,CLAIM_DENIED_MISREPRESENTATION,Duplicate invoice; Prior similar claims; Late reporting
+SIU-0008,CLM-2025-001559,VND-901,2026-01-08,CLOSED,CLAIM_DENIED_MISREPRESENTATION,Duplicate invoice; Prior similar claims; Loss shortly after inception
+SIU-0009,CLM-2026-001560,VND-901,2026-06-09,CLOSED,CLAIM_DENIED_MISREPRESENTATION,Late reporting; Staged-accident pattern; Duplicate invoice
+SIU-0010,CLM-2026-001561,VND-901,2026-08-10,CLOSED,CLAIM_DENIED_MISREPRESENTATION,Prior similar claims; Inconsistent statements; No police report
+SIU-0011,CLM-2026-001562,VND-901,2026-08-13,CLOSED,REFERRED_TO_STATE_DOI,Prior similar claims; Duplicate invoice; Loss shortly after inception
+SIU-0012,CLM-2025-001564,VND-901,2025-04-08,OPEN,OPEN,Duplicate invoice; No police report; Inconsistent statements
+SIU-0013,CLM-2026-001567,VND-902,2026-07-21,CLOSED,REFERRED_TO_STATE_DOI,Late reporting; Inflated repair estimate; Prior similar claims
+SIU-0014,CLM-2025-001568,VND-902,2025-09-25,OPEN,OPEN,Prior similar claims; Staged-accident pattern; Duplicate invoice
+SIU-0015,CLM-2026-001572,VND-902,2026-05-28,OPEN,OPEN,Duplicate invoice; No police report; Prior similar claims
+SIU-0016,CLM-2026-001575,VND-902,2026-02-18,OPEN,OPEN,Inflated repair estimate; No police report; Late reporting
+SIU-0017,CLM-2025-001578,VND-902,2025-11-05,OPEN,OPEN,Prior similar claims; No police report; Inconsistent statements
+SIU-0018,CLM-2026-001580,VND-902,2026-02-03,CLOSED,CLAIM_DENIED_MISREPRESENTATION,Duplicate invoice; No police report; Late reporting
+SIU-0019,CLM-2026-001581,VND-902,2026-09-15,OPEN,OPEN,Duplicate invoice; Late reporting; Inconsistent statements
+SIU-0020,CLM-2026-001582,VND-902,2026-04-04,CLOSED,REFERRED_TO_STATE_DOI,Inflated repair estimate; Staged-accident pattern; No police report
+SIU-0021,CLM-2026-001583,VND-902,2026-06-05,CLOSED,CLAIM_DENIED_MISREPRESENTATION,Late reporting; Staged-accident pattern; No police report
+SIU-0022,CLM-2025-001585,VND-902,2025-12-25,CLOSED,REFERRED_TO_STATE_DOI,Inflated repair estimate; No police report; Late reporting
+SIU-0023,CLM-2026-001586,VND-902,2026-06-03,CLOSED,CLAIM_DENIED_MISREPRESENTATION,Staged-accident pattern; Prior similar claims; Loss shortly after inception
+SIU-0024,CLM-2025-001587,VND-903,2025-08-08,OPEN,OPEN,Late reporting; Inflated repair estimate; Duplicate invoice
+SIU-0025,CLM-2026-001590,VND-903,2026-04-17,CLOSED,UNFOUNDED,Prior similar claims; Loss shortly after inception; Duplicate invoice
+SIU-0026,CLM-2026-001592,VND-903,2026-10-01,CLOSED,REFERRED_TO_STATE_DOI,Duplicate invoice; No police report; Prior similar claims
+SIU-0027,CLM-2026-001595,VND-903,2026-09-17,CLOSED,REFERRED_TO_STATE_DOI,Inflated repair estimate; Prior similar claims; Staged-accident pattern
+SIU-0028,CLM-2026-001597,VND-903,2026-08-19,OPEN,OPEN,Loss shortly after inception; Late reporting; Inconsistent statements
+SIU-0029,CLM-2026-001598,VND-903,2026-05-28,OPEN,OPEN,Prior similar claims; Inflated repair estimate; Duplicate invoice
+SIU-0030,CLM-2026-001600,VND-903,2026-08-05,CLOSED,CLAIM_DENIED_MISREPRESENTATION,Staged-accident pattern; No police report; Inflated repair estimate
+SIU-0031,CLM-2025-001601,VND-903,2025-11-19,OPEN,OPEN,Prior similar claims; Inconsistent statements; No police report
+SIU-0032,CLM-2025-001602,VND-903,2025-07-10,CLOSED,CLAIM_DENIED_MISREPRESENTATION,Inconsistent statements; Staged-accident pattern; Late reporting
+SIU-0033,CLM-2025-001603,VND-903,2025-06-23,OPEN,OPEN,Staged-accident pattern; Inconsistent statements; Duplicate invoice
+SIU-0034,CLM-2026-001609,VND-903,2026-04-12,CLOSED,UNFOUNDED,Inflated repair estimate; Staged-accident pattern; Inconsistent statements
+SIU-0035,CLM-2026-000749,VND-013,2026-08-06,CLOSED,CLAIM_REDUCED,No police report; Late reporting; Inflated repair estimate
+SIU-0036,CLM-2026-000876,VND-011,2026-10-01,OPEN,OPEN,Late reporting; Duplicate invoice; No police report
+SIU-0037,CLM-2026-001056,,2026-06-24,CLOSED,CLAIM_REDUCED,Staged-accident pattern; Inconsistent statements; Inflated repair estimate
+SIU-0038,CLM-2025-000928,,2025-07-07,CLOSED,CLAIM_DENIED_MISREPRESENTATION,Inflated repair estimate; Staged-accident pattern; Loss shortly after inception
+SIU-0039,CLM-2026-000549,,2026-02-22,CLOSED,CLAIM_DENIED_MISREPRESENTATION,Inconsistent statements; Late reporting; Staged-accident pattern
+SIU-0040,CLM-2025-000790,,2025-08-31,CLOSED,CLAIM_DENIED_MISREPRESENTATION,No police report; Prior similar claims; Inflated repair estimate
+SIU-0041,CLM-2025-000788,,2025-10-23,CLOSED,CLAIM_DENIED_MISREPRESENTATION,Inconsistent statements; Late reporting; Loss shortly after inception
+SIU-0042,CLM-2025-000487,VND-035,2025-09-27,CLOSED,CLAIM_DENIED_MISREPRESENTATION,Inflated repair estimate; Loss shortly after inception; Prior similar claims
+SIU-0043,CLM-2025-001380,,2025-10-30,CLOSED,UNFOUNDED,Inflated repair estimate; Inconsistent statements; Prior similar claims
+SIU-0044,CLM-2026-000746,VND-052,2026-04-23,OPEN,OPEN,Loss shortly after inception; Inflated repair estimate; Inconsistent statements
+SIU-0045,CLM-2025-001125,,2025-10-26,CLOSED,UNFOUNDED,Inconsistent statements; Loss shortly after inception; No police report
+SIU-0046,CLM-2025-000664,,2025-08-08,CLOSED,CLAIM_REDUCED,Late reporting; Inconsistent statements; Inflated repair estimate
+SIU-0047,CLM-2026-000017,,2026-09-14,CLOSED,CLAIM_REDUCED,Staged-accident pattern; No police report; Prior similar claims
+SIU-0048,CLM-2025-000791,,2025-05-25,CLOSED,UNFOUNDED,Inconsistent statements; Inflated repair estimate; Prior similar claims
+SIU-0049,CLM-2025-001285,,2025-08-24,CLOSED,CLAIM_DENIED_MISREPRESENTATION,Inflated repair estimate; Inconsistent statements; Duplicate invoice
+SIU-0050,CLM-2025-000613,,2025-12-05,OPEN,OPEN,No police report; Loss shortly after inception; Late reporting
+SIU-0051,CLM-2026-001005,,2026-06-05,OPEN,OPEN,Prior similar claims; No police report; Late reporting
+SIU-0052,CLM-2025-000062,,2025-12-09,CLOSED,UNFOUNDED,Duplicate invoice; Loss shortly after inception; No police report
+SIU-0053,CLM-2025-000552,VND-052,2025-05-15,CLOSED,CLAIM_REDUCED,Late reporting; No police report; Staged-accident pattern
+SIU-0054,CLM-2026-001082,,2026-10-01,CLOSED,CLAIM_REDUCED,Prior similar claims; Inconsistent statements; Duplicate invoice
+SIU-0055,CLM-2026-001333,,2026-06-01,CLOSED,UNFOUNDED,Inflated repair estimate; Inconsistent statements; Prior similar claims
+SIU-0056,CLM-2025-001113,,2025-10-19,CLOSED,CLAIM_DENIED_MISREPRESENTATION,Duplicate invoice; Staged-accident pattern; Loss shortly after inception
+SIU-0057,CLM-2026-000233,,2026-02-22,OPEN,OPEN,Loss shortly after inception; Prior similar claims; Inconsistent statements
+SIU-0058,CLM-2026-001158,VND-050,2026-05-12,CLOSED,CLAIM_REDUCED,Inflated repair estimate; No police report; Late reporting
+SIU-0059,CLM-2026-000248,VND-033,2026-09-21,CLOSED,CLAIM_DENIED_MISREPRESENTATION,Loss shortly after inception; Duplicate invoice; Inconsistent statements
