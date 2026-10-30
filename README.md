@@ -5,7 +5,7 @@ It writes **Auto, Homeowners, Commercial Property, General Liability and Workers
 
 > Everything here is synthetic. simplified, fictionalised demo values
 
-## 1. What the app does
+## What the app does
 
 | UI NavigationTab | What it is | How it works |
 |---|---|---|
@@ -19,11 +19,124 @@ It writes **Auto, Homeowners, Commercial Property, General Liability and Workers
 
 ### 1. Index Documents
 
+Add PDFs to the knowledge base by uploading them or indexing documents already in local storage or a GCS bucket. The app extracts text, splits it into searchable chunks, and stores their embeddings in the vector index. This makes company guidelines, policy forms and state summaries available to RAG Q&A and agents that search company guidelines.
+
+```mermaid
+flowchart LR
+    A["Upload PDFs or sync stored PDFs"] --> B["Extract text from pages"]
+    B --> C["Split text into searchable chunks"]
+    C --> D["Create embeddings"]
+    D --> E{"Vector index"}
+    E --> F["Chroma<br/>Local mode"]
+    E --> G["Vertex AI Vector Search<br/>Cloud mode"]
+    F --> H["RAG Q&A and agent guideline search"]
+    G --> H
+
+    classDef input fill:#E3F2FD,stroke:#1565C0,color:#111;
+    classDef process fill:#E8F5E9,stroke:#2E7D32,color:#111;
+    classDef storage fill:#FFF3E0,stroke:#EF6C00,color:#111;
+    classDef output fill:#E1F5FE,stroke:#0288D1,color:#111;
+    class A input;
+    class B,C,D process;
+    class E,F,G storage;
+    class H output;
+```
+<img src="./assets/document_ingestion.png" width="1000">
+
+
 ### 2. RAG QnA
+
+Ask questions about the indexed company and state documents in plain English. The app finds relevant passages, then uses them to generate a concise answer; if the documents don't contain the answer, it should say so. Choose the default similarity search, contextual compression to trim retrieved passages, or multi-query search to broaden the search with alternate phrasings.
+
+```mermaid
+flowchart LR
+    A["Question about a policy or guideline"] --> B{"Retrieval strategy"}
+    B --> C["Similarity<br/>Find closest passages"]
+    B --> D["Contextual compression<br/>Keep relevant sentences"]
+    B --> E["Multi-query<br/>Search alternate phrasings"]
+    C --> F["Relevant indexed passages"]
+    D --> F
+    E --> F
+    F --> G["Answer grounded in document text"]
+    G --> H["Concise answer or<br/>I don't know"]
+
+    classDef input fill:#E3F2FD,stroke:#1565C0,color:#111;
+    classDef choice fill:#F3E5F5,stroke:#7B1FA2,color:#111;
+    classDef retrieval fill:#E8F5E9,stroke:#2E7D32,color:#111;
+    classDef answer fill:#E1F5FE,stroke:#0288D1,color:#111;
+    class A input;
+    class B choice;
+    class C,D,E,F retrieval;
+    class G,H answer;
+```
+#### Example Questions
+1. Response evidence in in `./insurance-iq/sample_docs/cardinal_ridge_claims_authority_and_reserving_guidelines.pdf` file
+<img src="./assets/qna_01.png" width="600" height="250"> <img src="./assets/qna_01_evid.png" width="600" height="250">
+
+2. Response evidence in in `./insurance-iq/sample_docs/state_fl_claims_regulations_summary.pdf` file
+<img src="./assets/qna_02.png" width="600" height="150"> <img src="./assets/qna_02_evid.png" width="600" height="200">
+
 
 ### 3. Insurance Assistant
 
+Ask a broad portfolio or claim question in one place. The assistant selects from read-only SQL for portfolio analytics, claim and compliance tools for record-specific questions, and document search for policy rules. It uses tool results for figures and names the source document for policy answers.
+
+```mermaid
+flowchart LR
+    A["Portfolio, claim, or policy question"] --> B["Insurance Assistant"]
+    B --> C["Read-only SQL<br/>Portfolio analytics"]
+    B --> D["Claim tools<br/>Details · coverage · fraud · compliance · vendors"]
+    B --> E["Guideline search<br/>Company and state documents"]
+    C --> F["Tool results"]
+    D --> F
+    E --> F
+    F --> G["Answer with sourced figures<br/>or policy references"]
+
+    classDef input fill:#E3F2FD,stroke:#1565C0,color:#111;
+    classDef agent fill:#E8F5E9,stroke:#2E7D32,color:#111;
+    classDef tools fill:#FFF3E0,stroke:#EF6C00,color:#111;
+    classDef output fill:#E1F5FE,stroke:#0288D1,color:#111;
+    class A input;
+    class B agent;
+    class C,D,E,F tools;
+    class G output;
+```
+
+**Question And Response**
+```text
+    What does our SIU guideline say about reserving rights during an investigation? Can you score CLM-DEMO-05 for fraud and tell me what to investigate next.   
+```
+<img src="./assets/claim_review_01.png" width="600" height="300"> <img src="./assets/claim_review_02.png" width="600" height="300">
+
+**Sources of Facts**
+1. Information about SIU guidelines from `cardinal_ridge_siu_fraud_detection_guidelines.pdf` file.
+
+<img src="./assets/claim_review_02_evid.png" width="800"  height="300">
+
+2. Information about claim `CLM-DEMO-05` and Numbers in RISK Score response, get information by asking our `Data Explorer`
+```text
+    Get information for claim CLM-DEMO-05 I need to get below information.
+    1. Claim id, policy_id, customer_id, policy inception date, loss_date, reported_date, vendor id, vendor name (separate columns)
+    2. Number of days between policy inception and loss occurred.
+    2. Number of days between loss occurred and loss reported.
+    3. Claim amount
+    4. Count of SIU referred for a vendor associated with this claim
+    5. Description
+    6. How many more claims the customer of this claim is linked to in last 24 months.
+```
+<img src="./assets/claim_review_03.png" width="600"  height="300">
+<img src="./assets/claim_review_04.png" width="600"  height="300">
+
+
 ### 4. Claims Review
+Enter a claim ID to get a decision memo based on three focused reviews: coverage, fraud/SIU risk, and state compliance and settlement authority. The Claims Director brings their findings together into a recommendation to approve, escalate, hold for SIU investigation, or deny, with reasons and follow-up actions.
+
+| Step | Agent | What it does | Tools used |
+|---|---|---|---|
+| 1 | Coverage | Checks the claim and policy, determines whether the loss is covered, and reports the deductible, limit and estimated payable amount. | `get_claim_details`, `check_coverage`; `search_company_guidelines` when policy wording is needed |
+| 2 | Fraud / SIU | Scores fraud indicators, checks for suspicious vendor patterns and recommends whether to refer the claim for investigation. | `score_fraud_indicators`, `lookup_vendor_history`; `get_claim_details` if the vendor ID is needed; `search_company_guidelines` optionally |
+| 3 | Compliance & Authority | Checks state claim deadlines, settlement approval authority and any required escalation. | `check_state_compliance`, `check_settlement_authority`; `search_company_guidelines` optionally |
+| 4 | Claims Director | Synthesizes the three specialist reports into a decision memo with rationale and required actions. | None; uses the specialist reports |
 
 ```mermaid
 flowchart LR
@@ -47,16 +160,28 @@ flowchart LR
     class F,G,H,I,J decision;
 ```
 
+**Question And Response**
+
+**1. Claim with Low risk**
+
+```text
+   Review claim CLM-DEMO-03  
+```
+**Response and Evidance from database for Amount Payable**
+
+<img src="./assets/CR_01.png" width="700" height="350"> <img src="./assets/CR_01_evid.png" width="700" height="350">
+
+
 ### 5. Underwriter Navigator
 
-A multi-agent flow for underwriting **new business and renewals**
+Enter a submission ID to assess a **new business application or renewal**. The workflow combines a deterministic risk and pricing assessment with the applicant's loss history, then produces an Underwriters Memo with a recommendation and next steps. When a submission requires referral, a human can review, approve, edit, or reject it before the memo is completed.
 
-| Step | Agent | What it does |
-|---|---|---|
-| 1 | Application & Risk | Reads the application + notes, calls the deterministic risk engine (score 0-100, tier, indicated premium, required authority, conditions), cites the guidelines |
-| 2 | Loss History | Existing customers: policies, latest claim versions, SIU flags and the underwriting insights from `claim_notes` |
-| 3 | Referral Desk (**HITL**) | If a referral is required it calls `request_manual_review`; LangChain's `HumanInTheLoopMiddleware` pauses the run until a human **approves, edits or rejects** it |
-| 4 | Underwriters Memo | One LLM call writes the memo (recommendation, risk, pricing, authority, conditions, next steps) |
+| Step | Agent | What it does | Tools used |
+|---|---|---|---|
+| 1 | Application & Risk | Reads the application + notes, calls the deterministic risk engine (score 0-100, tier, indicated premium, required authority, conditions), cites the guidelines | `get_submission`, `assess_submission_risk`, `search_company_guidelines` |
+| 2 | Loss History | Existing customers: policies, latest claim versions, SIU flags and the underwriting insights from `claim_notes` | `get_applicant_loss_history`, `get_submission`, `search_company_guidelines` |
+| 3 | Referral Desk (**HITL**) | If a referral is required it calls `request_manual_review`; LangChain's `HumanInTheLoopMiddleware` pauses the run until a human **approves, edits or rejects** it | `assess_submission_risk`, `request_manual_review` |
+| 4 | Underwriters Memo | One LLM call writes the memo (recommendation, risk, pricing, authority, conditions, next steps) | None; synthesizes the agent reports |
 
 ```mermaid
 flowchart LR
@@ -93,9 +218,52 @@ flowchart LR
     class F,G,I,J,K decision;
 ```
 
+**Question And Response**
+
+**1. Application Submission with 0 Risk - No HITL**
+
+```text
+    Underwrite submission SUB-DEMO-01.   
+```
+<img src="./assets/undrwriter_1.png" width="800" height="400">
+
+**2. Application Submission with High Risk - Need HITL**
+
+```text
+    Underwrite submission SUB-DEMO-04 and tell me if reinsurance must be notified. Escalate to the right authority.   
+```
+
+**Human-In-The-Loop Pause - Asking for decisiion**
+<img src="./assets/underwriter_hitl.png" width="800" height="400">
+
+**Human-In-The-Loop After Decision (Approve)**
+<img src="./assets/underwriter_approve.png" width="800" height="400">
+
+
 ### 6. Data Explorer
 
-## 3. Setup & Run.
+Ask a question in plain English or enter a SQL `SELECT` to explore the insurance database. For natural-language questions, an agent builds a query from the live database schema; for SQL, it runs your query as written. Queries are read-only, and results show the executed SQL alongside up to 50 rows so you can inspect or copy the query.
+
+```mermaid
+flowchart LR
+    A["Question in plain English<br/>or SQL SELECT"] --> B{"Input type"}
+    B --Natural Language(nl)--> C["Agent generates SQL<br/>from the live schema"]
+    B --SQL--> D["Validate read-only SQL"]
+    C --> D
+    D --> E["Execute against SQLite<br/>read-only"]
+    E --> F["Show executed SQL"]
+    E --> G["Show up to 50 result rows<br/>or no-data message"]
+
+    classDef input fill:#E3F2FD,stroke:#1565C0,color:#111;
+    classDef process fill:#E8F5E9,stroke:#2E7D32,color:#111;
+    classDef result fill:#E1F5FE,stroke:#0288D1,color:#111;
+    class A input;
+    class B,C,D,E process;
+    class F,G result;
+```
+<img src="./assets/data_explorer.png" width="1000">
+
+## 2. Setup & Run.
 ### Local Mode
 Prerequisites: Python 3.12+, Node 18+ (for the UI), a free Gemini API key (https://aistudio.google.com/apikey).
 
@@ -150,7 +318,7 @@ cd frontend; npm install; npm run dev
 **First-run step:** open **Index Documents** and click *Index Stored Documents* after copying the PDFs from `sample_docs/` into the upload folder (or just upload them with the drag-and-drop box; `curl -X POST http://localhost:8080/api/rag/ingest` re-indexes the stored folder).
 This embeds the 15 PDFs so Q&A and the agents' guideline search work. The SQL, coverage, fraud and compliance tools work without it.
 
-## 4. Sample questions used for testing system
+## Sample questions used for testing system
 
 ### 1. Q&A | Companies internal documents and state policies | (RAG over PDFs)
 
@@ -254,20 +422,3 @@ Type a **Natural Language question or a SQL query** it shows
 - Synthetic data and fictional company; simplified state rules — verify real law before any production use.
 - AI output is decision support. A licensed human must decide coverage, denial and fraud referrals.
 - Fraud score weights are illustrative heuristics, not a validated model; check for fairness/bias before real use.
-
-Get information for claim CLM-DEMO-05 I need to get below information.
-1. Claim id, policy_id, customer_id, policy inception date, loss_date, reported_date, vendor id, vendor name (separate columns)
-2. Number of days between policy inception and loss occurred.
-2. Number of days between loss occurred and loss reported.
-3. Claim amount
-4. Count of SIU referred for a vendor associated with this claim
-5. Description
-6. How many more claims the customer of this claim is linked to in last 24 months.
-
-Claim Review:
-Review claim CLM-2026-001610
-Review claim CLM-DEMO-04
-
-Underwriter Navigator:
-
-HITL: Underwrite submission SUB-DEMO-04 and tell me if reinsurance must be notified. Escalate to the right authority.

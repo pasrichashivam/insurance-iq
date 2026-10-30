@@ -218,17 +218,17 @@ export default function DocumentUploadTab() {
                         <div
                           key={file.name}
                           className={`flex items-center gap-3 p-4 rounded-xl border transition-all duration-300
-                            ${status.state === "done"    ? "border-success/30 bg-success/5"
+                            ${status.state === "done"    ? "border-primary/30 bg-gradient-to-r from-primary/10 via-fuchsia-500/10 to-accent/10"
                             : status.state === "error"   ? "border-destructive/30 bg-destructive/5"
                             : status.state === "skipped" ? "border-amber-500/30 bg-amber-500/5"
                             : status.state === "uploading"? "border-primary/30 bg-primary/5 shadow-inner"
                             : "border-border bg-card hover:bg-muted/20"}`}
                         >
                           <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 transition-colors
-                            ${status.state === "done" ? "bg-success/10" : status.state === "error" ? "bg-destructive/10" : "bg-muted"}`}>
+                            ${status.state === "done" ? "bg-gradient-to-r from-primary via-fuchsia-500 to-accent text-primary-foreground" : status.state === "error" ? "bg-destructive/10" : "bg-muted"}`}>
                             {status.state === "idle"      && <FileText className="w-5 h-5 text-muted-foreground" />}
                             {status.state === "uploading" && <Loader2 className="w-5 h-5 text-primary animate-spin" />}
-                            {status.state === "done"      && <CheckCircle className="w-5 h-5 text-success" />}
+                            {status.state === "done"      && <CheckCircle className="w-5 h-5" />}
                             {status.state === "skipped"   && <AlertTriangle className="w-5 h-5 text-amber-500" />}
                             {status.state === "error"     && <XCircle className="w-5 h-5 text-destructive" />}
                           </div>
@@ -240,9 +240,9 @@ export default function DocumentUploadTab() {
                               {status.state === "uploading" && "Analyzing & indexing…"}
                               {status.state === "done" && (
                                 <>
-                                  <span className="text-success">{status.pages} pages</span>
+                                  <span className="bg-gradient-to-r from-primary via-fuchsia-500 to-accent bg-clip-text text-transparent">{status.pages} pages</span>
                                   <span className="w-1 h-1 rounded-full bg-muted-foreground/30" />
-                                  <span className="text-success">{status.chunks} chunks indexed</span>
+                                  <span className="bg-gradient-to-r from-primary via-fuchsia-500 to-accent bg-clip-text text-transparent">{status.chunks} chunks indexed</span>
                                 </>
                               )}
                               {status.state === "skipped" && <span className="text-amber-600">{status.reason}</span>}
@@ -254,7 +254,7 @@ export default function DocumentUploadTab() {
                             <span className={`text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-md
                               ${status.state === "idle"      ? "bg-muted text-muted-foreground"
                               : status.state === "uploading" ? "bg-primary/20 text-primary"
-                              : status.state === "done"      ? "bg-success/20 text-success"
+                              : status.state === "done"      ? "bg-gradient-to-r from-primary via-fuchsia-500 to-accent text-primary-foreground"
                               : status.state === "skipped"   ? "bg-amber-500/20 text-amber-600"
                               : "bg-destructive/20 text-destructive"}`}>
                               {status.state === "uploading" ? "running" : status.state}
@@ -310,8 +310,8 @@ export default function DocumentUploadTab() {
                     )}
 
                     {allDone && !hasIdle && (
-                      <div className="p-4 rounded-xl bg-success/10 border border-success/30 text-sm text-success font-semibold flex items-center gap-3 animate-in fade-in zoom-in-95 duration-500">
-                        <div className="w-8 h-8 rounded-full bg-success/20 flex items-center justify-center shrink-0">
+                      <div className="p-4 rounded-xl bg-gradient-to-r from-primary/10 via-fuchsia-500/10 to-accent/10 border border-primary/30 text-sm text-foreground font-semibold flex items-center gap-3 animate-in fade-in zoom-in-95 duration-500">
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-r from-primary via-fuchsia-500 to-accent text-primary-foreground flex items-center justify-center shrink-0">
                           <CheckCircle className="w-5 h-5" />
                         </div>
                         All files processed. Cardinal Ridge knowledge base updated.

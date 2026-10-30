@@ -38,7 +38,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title=settings.app_name,
     version=settings.app_version,
-    description="Multi-agent procurement audit & RAG document intelligence backend.",
+    description="Multi-agent insurance assistant & RAG document intelligence backend.",
     lifespan=lifespan,
 )
 

@@ -24,7 +24,7 @@ from fastapi.concurrency import run_in_threadpool
 
 from agent.agents import ClaimsReviewSupervisor, ask_assistant
 from agent.data_explorer import explore
-from agent.underwriter import UnderwriterNavigator
+from agent.agents import UnderwriterNavigator
 from api.schemas import (
     AssistantRequest,
     AssistantResponse,

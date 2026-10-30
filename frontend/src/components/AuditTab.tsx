@@ -223,11 +223,11 @@ export default function AuditTab() {
                           >
                             {/* Status Circle (over the timeline track) */}
                             <div className={`flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-full border-2 bg-card transition-all duration-300
-                              ${isDone    ? "border-success bg-success/10 shadow-[0_0_8px_hsl(var(--success)/0.25)]" :
+                              ${isDone    ? "border-transparent bg-gradient-to-br from-primary via-fuchsia-500 to-accent shadow-[0_0_8px_hsl(var(--primary)/0.35)]" :
                                 isRunning ? "border-primary bg-primary/10 shadow-[0_0_8px_hsl(var(--primary)/0.25)]" :
                                 isError   ? "border-destructive bg-destructive/10" :
                                             "border-border bg-muted"}`}>
-                              {isDone   && <CheckCircle className="h-3.5 w-3.5 text-success" />}
+                              {isDone   && <CheckCircle className="h-3.5 w-3.5 text-primary-foreground" />}
                               {isRunning && <Loader2 className="h-3.5 w-3.5 text-primary animate-spin" />}
                               {isError  && <XCircle className="h-3.5 w-3.5 text-destructive" />}
                               {ph.status === "pending" && (
@@ -245,7 +245,7 @@ export default function AuditTab() {
                                 <span className="text-[10px] font-semibold text-primary animate-pulse">Processing…</span>
                               )}
                               {isDone && (
-                                <span className="text-[10px] text-success/80">Complete</span>
+                                <span className="text-[10px] font-medium bg-gradient-to-r from-primary via-fuchsia-500 to-accent bg-clip-text text-transparent">Complete</span>
                               )}
                               {isError && (
                                 <span className="text-[10px] text-destructive/80">Failed</span>
@@ -282,7 +282,7 @@ export default function AuditTab() {
                 <div className="flex w-full items-center justify-between text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/50">
                   <span>4 Agents · Sequential</span>
                   <div className="flex items-center gap-1.5">
-                    <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse" />
+                    <span className="h-1.5 w-1.5 rounded-full bg-gradient-to-r from-primary to-accent animate-pulse" />
                     All Passed
                   </div>
                 </div>
@@ -361,7 +361,7 @@ export default function AuditTab() {
                 <div className="flex w-full items-center justify-between text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/50">
                   <span>Gemini · Auto-managed tokens</span>
                   <div className="flex items-center gap-1.5">
-                    <span className="h-1.5 w-1.5 rounded-full bg-success" />
+                    <span className="h-1.5 w-1.5 rounded-full bg-gradient-to-r from-primary to-accent" />
                     Complete
                   </div>
                 </div>

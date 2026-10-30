@@ -334,9 +334,9 @@ export default function UnderwriterTab() {
                           >
                             <div
                               className={`flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-full border-2 bg-card transition-all duration-300
-                              ${isDone ? "border-success bg-success/10" : isRunning ? "border-primary bg-primary/10" : isReview ? "border-amber-500 bg-amber-500/10" : isError ? "border-destructive bg-destructive/10" : "border-border bg-muted"}`}
+                              ${isDone ? "border-transparent bg-gradient-to-br from-primary via-fuchsia-500 to-accent shadow-[0_0_8px_hsl(var(--primary)/0.35)]" : isRunning ? "border-primary bg-primary/10" : isReview ? "border-amber-500 bg-amber-500/10" : isError ? "border-destructive bg-destructive/10" : "border-border bg-muted"}`}
                             >
-                              {isDone && <CheckCircle className="h-3.5 w-3.5 text-success" />}
+                              {isDone && <CheckCircle className="h-3.5 w-3.5 text-primary-foreground" />}
                               {isRunning && <Loader2 className="h-3.5 w-3.5 text-primary animate-spin" />}
                               {isReview && <UserCheck className="h-3.5 w-3.5 text-amber-600" />}
                               {isError && <XCircle className="h-3.5 w-3.5 text-destructive" />}
@@ -348,7 +348,7 @@ export default function UnderwriterTab() {
                               </span>
                               {isRunning && <span className="text-[10px] font-semibold text-primary animate-pulse">Processing…</span>}
                               {isReview && <span className="text-[10px] font-semibold text-amber-600">Waiting for human review</span>}
-                              {isDone && <span className="text-[10px] text-success/80">Complete</span>}
+                              {isDone && <span className="text-[10px] font-medium bg-gradient-to-r from-primary via-fuchsia-500 to-accent bg-clip-text text-transparent">Complete</span>}
                               {isError && <span className="text-[10px] text-destructive/80">Failed</span>}
                             </div>
                             {canExpand && (
@@ -428,7 +428,7 @@ export default function UnderwriterTab() {
                 <div className="flex w-full items-center justify-between text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/50">
                   <span>3 Agents · 1 Human gate</span>
                   <div className="flex items-center gap-1.5">
-                    <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse" />
+                    <span className="h-1.5 w-1.5 rounded-full bg-gradient-to-r from-primary to-accent animate-pulse" />
                     Complete
                   </div>
                 </div>
@@ -515,7 +515,7 @@ export default function UnderwriterTab() {
                 <div className="flex w-full items-center justify-between text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/50">
                   <span>Risk engine numbers · LLM narrative</span>
                   <div className="flex items-center gap-1.5">
-                    <span className="h-1.5 w-1.5 rounded-full bg-success" />
+                    <span className="h-1.5 w-1.5 rounded-full bg-gradient-to-r from-primary to-accent" />
                     Complete
                   </div>
                 </div>
