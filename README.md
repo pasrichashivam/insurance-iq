@@ -69,12 +69,14 @@ flowchart LR
     class C,D,E,F retrieval;
     class G,H answer;
 ```
-#### Example Questions
-1. Response evidence in in `./insurance-iq/sample_docs/cardinal_ridge_claims_authority_and_reserving_guidelines.pdf` file
-<img src="./assets/qna_01.png" width="600" height="250"> <img src="./assets/qna_01_evid.png" width="600" height="250">
+#### Question And Response
+1. Response evidence in `./insurance-iq/sample_docs/cardinal_ridge_claims_authority_and_reserving_guidelines.pdf` file
 
-2. Response evidence in in `./insurance-iq/sample_docs/state_fl_claims_regulations_summary.pdf` file
-<img src="./assets/qna_02.png" width="600" height="150"> <img src="./assets/qna_02_evid.png" width="600" height="200">
+<img src="./assets/qna_01.png" width="800" height="350"> <img src="./assets/qna_01_evid.png" width="800" height="350">
+
+2. Response evidence in `./insurance-iq/sample_docs/state_fl_claims_regulations_summary.pdf` file
+
+<img src="./assets/qna_02.png" width="800" height="300"> <img src="./assets/qna_02_evid.png" width="800" height="300">
 
 
 ### 3. Insurance Assistant
@@ -102,16 +104,16 @@ flowchart LR
     class G output;
 ```
 
-**Question And Response**
+#### Question And Response
 ```text
     What does our SIU guideline say about reserving rights during an investigation? Can you score CLM-DEMO-05 for fraud and tell me what to investigate next.   
 ```
-<img src="./assets/claim_review_01.png" width="600" height="300"> <img src="./assets/claim_review_02.png" width="600" height="300">
+<img src="./assets/claim_review_01.png" width="800" height="400"> <img src="./assets/claim_review_02.png" width="800" height="400">
 
-**Sources of Facts**
+**Sources of Evidence**
 1. Information about SIU guidelines from `cardinal_ridge_siu_fraud_detection_guidelines.pdf` file.
 
-<img src="./assets/claim_review_02_evid.png" width="800"  height="300">
+<img src="./assets/claim_review_02_evid.png" width="800"  height="400">
 
 2. Information about claim `CLM-DEMO-05` and Numbers in RISK Score response, get information by asking our `Data Explorer`
 ```text
@@ -124,8 +126,8 @@ flowchart LR
     5. Description
     6. How many more claims the customer of this claim is linked to in last 24 months.
 ```
-<img src="./assets/claim_review_03.png" width="600"  height="300">
-<img src="./assets/claim_review_04.png" width="600"  height="300">
+<img src="./assets/claim_review_03.png" width="900"  height="400">
+<img src="./assets/claim_review_04.png" width="900"  height="400">
 
 
 ### 4. Claims Review
@@ -160,16 +162,26 @@ flowchart LR
     class F,G,H,I,J decision;
 ```
 
-**Question And Response**
-
+#### Question And Response
 **1. Claim with Low risk**
 
 ```text
    Review claim CLM-DEMO-03  
 ```
-**Response and Evidance from database for Amount Payable**
+**Response and Evidence from database for Amount Payable**
 
-<img src="./assets/CR_01.png" width="700" height="350"> <img src="./assets/CR_01_evid.png" width="700" height="350">
+<img src="./assets/CR_01.png" width="900" height="400">
+<img src="./assets/CR_01_evid.png" width="900" height="400">
+
+**2. Claim for Loss happned After Policy Was Cancelled**
+
+```text
+   Review claim CLM-DEMO-06  
+```
+**Response and Evidence from database to check if loss happened after Policy Cancellation**
+
+<img src="./assets/CR_02.png" width="900" height="400">
+<img src="./assets/CR_02_evid.png" width="900" height="400">
 
 
 ### 5. Underwriter Navigator
@@ -218,8 +230,7 @@ flowchart LR
     class F,G,I,J,K decision;
 ```
 
-**Question And Response**
-
+#### Question And Response
 **1. Application Submission with 0 Risk - No HITL**
 
 ```text
@@ -261,6 +272,8 @@ flowchart LR
     class B,C,D,E process;
     class F,G result;
 ```
+
+#### Question And Response
 <img src="./assets/data_explorer.png" width="1000">
 
 ## 2. Setup & Run.
