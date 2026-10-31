@@ -4,7 +4,7 @@ The provider is chosen with EMBEDDING_PROVIDER (defaults to LLM_PROVIDER), indep
 
     openai -> text-embedding-3-small (OPENAI_API_KEY)
     google -> text-embedding-005 on Vertex AI when APP_MODE=cloud (Google Cloud credentials),
-              gemini-embedding-001 on the Gemini API when APP_MODE=local (GOOGLE_API_KEY)
+    on the Gemini API when APP_MODE=local (GOOGLE_API_KEY)
 
 All vectors are EMBEDDING_DIMENSIONS long: 768 for google, 1536 for openai (unless overridden).
 The Vertex AI Vector Search index is created with 768 (see .github/workflows/deploy.yml), so use

@@ -309,9 +309,9 @@ This guide runs the project **locally**: vectors are stored in Chroma on disk an
     |---|---|
     | `APP_MODE` | Keep `local` |
     | `LLM_PROVIDER` | `openai` (default) or `google` |
-    | `EMBEDDING_PROVIDER` | `openai` or `google`; empty = same as `LLM_PROVIDER` |
+    | `EMBEDDING_PROVIDER` | `openai` (default) or `google` |
     | `OPENAI_API_KEY` / `GOOGLE_API_KEY` | The key(s) for the provider(s) you chose (in `cloud` mode Google uses Vertex AI credentials instead) |
-    | `LLM_MODEL_NAME`, `EMBEDDING_MODEL_NAME` | Optional overrides (defaults: `gpt-6.1-sol` / `text-embedding-3-small` for OpenAI; `gemini-3.8-flash` / `text-embedding-005` for Google; local Gemini API uses `gemini-embedding-001`). Changing the embedding provider requires re-indexing |
+    | `LLM_MODEL_NAME`, `EMBEDDING_MODEL_NAME` | Optional overrides (defaults: `gpt-6.1-sol` / `text-embedding-3-small` for OpenAI; `gemini-3.8-flash` / `text-embedding-005` for Google. Changing the embedding provider requires re-indexing |
 
 ### 2. Insurance Company Synthetic Data
 The data for the fictional Cardinal Ridge Insurance Group is **already committed**, so there is nothing to generate:
@@ -338,9 +338,9 @@ Also exported as CSV in `insurance_data/csv/` & the SQLite file used by the app 
 
 #### Company and State Policy documents (`sample_docs/`, 15 PDFs)
 * Company: Claims Handling, Authority & Reserving Guidelines · SIU Fraud Detection Guidelines · Underwriting Guidelines · Homeowners HO-3 Form ·
-* Personal Auto Form · Catastrophe Response Plan · Reinsurance Treaty Summary · Privacy & Data Protection (GLBA, AI use) ·
+* Personal Auto Form · Catastrophe Response Plan · Reinsurance Treaty Summary · Privacy & Data Protection·
 * Commercial Property & Workers' Comp Claims Guidelines.
-* State: Claims-regulation summaries for **TX, FL, CA, NY, OH, IL** (acknowledge / decide / pay clocks, business vs calendar days).
+* State: Claims-regulation summaries for **TX, FL, CA, NY, OH, IL**.
 
 The numbers in the PDFs match the database tables, so RAG answers and tool results agree.
 
@@ -467,9 +467,10 @@ Add the following three secrets:
 
 | Secret Name | Value |
 |---|---|
-| `GCP_PROJECT_ID` | Your new project ID (e.g., `meridian-ai-prod`) |
+| `GCP_PROJECT_ID` | Your new project ID (e.g., `insurance-ai`) |
 | `GCP_CREDENTIALS_JSON` | The entire contents of `github-deployer-key.json` |
-| `GOOGLE_API_KEY` | Your Gemini API key from [AI Studio](https://aistudio.google.com/apikey) (starts with `AI`, 39 characters) |
+| `OPENAI_API_KEY` / `GOOGLE_API_KEY` | Your OpenAI  Or Gemini API key |
+
 
 ### Step 4: Trigger the Pipeline
 
@@ -491,10 +492,9 @@ The GitHub Action ([.github/workflows/deploy.yml](.github/workflows/deploy.yml))
 - ✅ Build the Docker image and push to Artifact Registry.
 - ✅ Deploy the Cloud Run service with public access.
 
-> [!NOTE]
-> The very first deployment can take 30–45 minutes due to Vector Search index creation. Subsequent deployments typically complete in 3–5 minutes.
 
-Once complete, the Action logs will print your live Cloud Run URL. Your application is now fully automated and live! 🚀
+
+Once complete, the Action logs will print live Cloud Run URL.
 
 ## 4. Sample questions used for testing system
 

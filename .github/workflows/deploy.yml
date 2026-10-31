@@ -195,7 +195,7 @@ jobs:
         env:
           # Passed as an environment variable (not pasted into the script text) so the key never appears in the shell command
           RAW_GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
-          RAW_GOPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          RAW_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           # Create secret container if it doesn't exist
           if ! gcloud secrets describe GOOGLE_API_KEY >/dev/null 2>&1; then
