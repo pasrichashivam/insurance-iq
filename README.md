@@ -5,6 +5,42 @@ It writes **Auto, Homeowners, Commercial Property, General Liability and Workers
 
 > Everything here is synthetic. simplified, fictionalised demo values
 
+## Table of Contents
+
+- [What the app does](#what-the-app-does)
+  - [1. Index Documents](#1-index-documents)
+  - [2. RAG QnA](#2-rag-qna)
+    - [Question And Response](#question-and-response)
+  - [3. Insurance Assistant](#3-insurance-assistant)
+    - [Question And Response](#question-and-response-1)
+  - [4. Claims Review](#4-claims-review)
+    - [Question And Response](#question-and-response-2)
+  - [5. Underwriter Navigator](#5-underwriter-navigator)
+    - [Question And Response](#question-and-response-3)
+  - [6. Data Explorer](#6-data-explorer)
+    - [Question And Response](#question-and-response-4)
+- [2. Local Setup Environment & Run](#2-local-setup-environment--run)
+  - [1. Setup to run project locally](#1-setup-to-run-project-locally)
+  - [2. Insurance Company Synthetic Data](#2-insurance-company-synthetic-data)
+    - [Database tables](#database-tables)
+    - [Company and State Policy documents (`sample_docs/`, 15 PDFs)](#company-and-state-policy-documents-sample_docs-15-pdfs)
+  - [3. Run Backend and Frontend](#3-run-backend-and-frontend)
+- [3. Setup and Deploy to GCP](#3-setup-and-deploy-to-gcp)
+  - [Step 1: Create the Project and Enable Billing](#step-1-create-the-project-and-enable-billing)
+  - [Step 2: Create a Powerful Service Account](#step-2-create-a-powerful-service-account)
+  - [Step 3: Configure GitHub Secrets](#step-3-configure-github-secrets)
+  - [Step 4: Trigger the Pipeline](#step-4-trigger-the-pipeline)
+- [4. Sample questions used for testing system](#4-sample-questions-used-for-testing-system)
+  - [1. Q&A | Companies internal documents and state policies | (RAG over PDFs)](#1-qa--companies-internal-documents-and-state-policies--rag-over-pdfs)
+  - [2. Claims Review (agents)](#2-claims-review-agents)
+  - [3. Insurance Assistant (SQL + tools + docs) | General Agent](#3-insurance-assistant-sql--tools--docs--general-agent)
+  - [4. Underwriter Navigator](#4-underwriter-navigator)
+    - [Queries that trigger the Human-in-the-Loop pause](#queries-that-trigger-the-human-in-the-loop-pause)
+  - [5. Data Explorer](#5-data-explorer)
+- [5. TODO List](#5-todo-list)
+- [6. Limits & disclaimers](#6-limits--disclaimers)
+
+
 ## What the app does
 
 | UI NavigationTab | What it is | How it works |
@@ -410,7 +446,7 @@ gcloud iam service-accounts keys create github-deployer-key.json \
 > [!CAUTION]
 > The `github-deployer-key.json` file contains highly privileged credentials. **Never commit this file to version control.** Store it securely and delete the local copy after adding it to GitHub Secrets.
 
-#### Troubleshooting: "Key creation is not allowed on this service account"
+**Troubleshooting: "Key creation is not allowed on this service account"**
 
 If the last command fails with this error:
 
@@ -596,7 +632,13 @@ Type a **Natural Language question or a SQL query** it shows
 | SELECT * FROM weather | SQL | Same message, `detail: SQL error: no such table: weather` |
 | DELETE FROM claims | SQL | Refused: "Only read-only queries are allowed…" — no change to the database |
 
-## 5. Limits & disclaimers
+## 5. TODO List
+* Observability
+* Cost/Token tracking
+* Evaluations
+* & More
+
+## 6. Limits & disclaimers
 - Synthetic data and fictional company; simplified state rules — verify real law before any production use.
 - AI output is decision support. A licensed human must decide coverage, denial and fraud referrals.
 - Fraud score weights are illustrative heuristics, not a validated model; check for fairness/bias before real use.
