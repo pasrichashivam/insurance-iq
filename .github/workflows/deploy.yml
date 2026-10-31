@@ -195,6 +195,7 @@ jobs:
         env:
           # Passed as an environment variable (not pasted into the script text) so the key never appears in the shell command
           RAW_GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          RAW_GOPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           # Create secret container if it doesn't exist
           if ! gcloud secrets describe GOOGLE_API_KEY >/dev/null 2>&1; then
@@ -218,6 +219,27 @@ jobs:
             --member="serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
             --role="roles/secretmanager.secretAccessor" >/dev/null
 
+          # Create OPENAI_API_KEY secret container if it doesn't exist
+          if ! gcloud secrets describe OPENAI_API_KEY >/dev/null 2>&1; then
+            echo "Creating OPENAI_API_KEY secret container..."
+            gcloud secrets create OPENAI_API_KEY --replication-policy="automatic"
+          fi
+
+          # Sanitize: strip all whitespace, newlines, carriage returns
+          CLEAN_OPENAI_KEY=$(echo -n "$RAW_OPENAI_API_KEY" | tr -d '[:space:]')
+          echo "OPENAI API Key length after sanitization: ${#CLEAN_OPENAI_KEY} characters"
+
+          # Add the sanitized value as a new secret version
+          echo -n "$CLEAN_OPENAI_KEY" | gcloud secrets versions add OPENAI_API_KEY --data-file=-
+          echo "Successfully updated OPENAI_API_KEY with the sanitized GitHub Secret value."
+
+          # Grant Cloud Run service account access to Secret Manager
+          echo "Granting Secret Manager permissions to Cloud Run Service Account..."
+          gcloud secrets add-iam-policy-binding OPENAI_API_KEY \
+            --member="serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
+            --role="roles/secretmanager.secretAccessor" >/dev/null
+            
+
       # --- Phase 5: Build & Deploy Application ---
       - name: Build and Push Docker Image
         run: |
@@ -232,8 +254,8 @@ jobs:
             --allow-unauthenticated \
             --port 8080 \
             --max-instances 3 \
-            --set-env-vars="APP_MODE=cloud,LLM_PROVIDER=google,EMBEDDING_PROVIDER=google,ENVIRONMENT=production,GCP_PROJECT_ID=${{ env.PROJECT_ID }},GCP_REGION=${{ env.REGION }},GCS_BUCKET_NAME=${{ env.PROJECT_ID }}-vector-staging,GCS_PREFIX=uploads/,LLM_MODEL_NAME=gemini-3.8-flash,EMBEDDING_MODEL_NAME=text-embedding-005,EMBEDDING_DIMENSIONS=768,VECTOR_SEARCH_INDEX_ID=${{ env.INDEX_ID }},VECTOR_SEARCH_INDEX_ENDPOINT_ID=${{ env.ENDPOINT_ID }}" \
-            --update-secrets="GOOGLE_API_KEY=GOOGLE_API_KEY:latest"
+            --set-env-vars="APP_MODE=cloud,LLM_PROVIDER=openai,EMBEDDING_PROVIDER=openai,ENVIRONMENT=production,GCP_PROJECT_ID=${{ env.PROJECT_ID }},GCP_REGION=${{ env.REGION }},GCS_BUCKET_NAME=${{ env.PROJECT_ID }}-vector-staging,GCS_PREFIX=uploads/,VECTOR_SEARCH_INDEX_ID=${{ env.INDEX_ID }},VECTOR_SEARCH_INDEX_ENDPOINT_ID=${{ env.ENDPOINT_ID }}" \
+            --update-secrets="GOOGLE_API_KEY=GOOGLE_API_KEY:latest,OPENAI_API_KEY=OPENAI_API_KEY:latest"
 
       - name: Allow Public Access to Cloud Run
         run: |

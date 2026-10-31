@@ -276,6 +276,8 @@ flowchart LR
 #### Question And Response
 <img src="./assets/data_explorer.png" width="1000">
 
+---
+
 ## 2. Local Setup Environment & Run
 This guide runs the project **locally**: vectors are stored in Chroma on disk and no Google Cloud project is needed.
 
@@ -345,8 +347,8 @@ The numbers in the PDFs match the database tables, so RAG answers and tool resul
 ### 3. Run Backend and Frontend
 1. **Run the backend**
 
-API docs are available at http://localhost:8080/docs
-    
+    API docs are available at http://localhost:8080/docs
+
     ```powershell
         uv run uvicorn api.main:app --app-dir backend --reload --port 8080
     ```
@@ -362,17 +364,17 @@ API docs are available at http://localhost:8080/docs
 > **First-run step:** open **Index Documents** and click *Index Stored Documents* and upload the PDF files we have in `sample_docs` and click Initialize Ingestion.  <br>
 >This embeds the 15 PDFs so Q&A and the agents' guideline search work. The SQL, coverage, fraud and compliance tools work without it.
 
+---
+
 ## 3. Setup and Deploy to GCP
 If you are moving this codebase to an entirely new GCP project where nothing has been configured, follow these exact manual steps once. After this initial setup, the GitHub Action will fully manage the project for you.
 
 ### Step 1: Create the Project and Enable Billing
 
 1. Go to the [Google Cloud Console](https://console.cloud.google.com/).
-2. Create a new project (e.g., `meridian-ai-prod`).
+2. Create a new project (e.g., `insurance-ai`).
 3. Link an active Billing Account to the project.
 
-> [!IMPORTANT]
-> Cloud Run and Vertex AI require active billing to function. The deployment pipeline will fail silently without it.
 
 ### Step 2: Create a Powerful Service Account
 
@@ -382,7 +384,7 @@ Open Google Cloud Shell (or your local terminal authenticated to your account) a
 
 ```bash
 # Set your active project
-export PROJECT_ID="meridian-ai-prod"
+export PROJECT_ID="project-id"
 gcloud config set project $PROJECT_ID
 
 # Create the GitHub Deployer service account
