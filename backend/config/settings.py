@@ -20,7 +20,7 @@ import os
 from pathlib import Path
 from typing import Literal
 
-from pydantic import Field, field_validator, model_validator
+from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # Project root = two levels above backend/config/
@@ -39,7 +39,7 @@ class Settings(BaseSettings):
 
     app_mode: Literal["local", "cloud"] = Field("local", validation_alias="APP_MODE")
 
-    llm_provider: Literal["openai", "google"] = Field("openai", validation_alias="LLM_PROVIDER")
+    llm_provider: Literal["openai", "google"] = Field("", validation_alias="LLM_PROVIDER")
     embedding_provider: Literal["openai", "google", ""] = Field("", validation_alias="EMBEDDING_PROVIDER")
     
     OPENAI_API_KEY: str = Field("", validation_alias="OPENAI_API_KEY")
@@ -50,7 +50,6 @@ class Settings(BaseSettings):
     
     # openai -> gpt-6.1-sol, google -> gemini-3.8-flash
     llm_model_name: str = Field("", validation_alias="LLM_MODEL_NAME")
-    llm_temperature: float = Field(0.0, validation_alias="LLM_TEMPERATURE")
 
     # --- Embeddings ---
     # google -> text-embedding-005 (cloud / Vertex AI)
@@ -58,6 +57,8 @@ class Settings(BaseSettings):
     
     # Empty = 768 for google, 1536 for openai
     embedding_dimensions: int | None = Field(None, validation_alias="EMBEDDING_DIMENSIONS")
+    
+    llm_temperature: float = Field(0.0, validation_alias="LLM_TEMPERATURE")
 
     # --- Local mode storage ---
     local_data_dir: str = Field(str(PROJECT_ROOT / ".insurance_iq"), validation_alias="LOCAL_DATA_DIR")
@@ -91,8 +92,10 @@ class Settings(BaseSettings):
             self.GCS_PREFIX += "/"
         if not self.llm_model_name:
             self.llm_model_name = "gemini-3.8-flash" if self.llm_provider == "google" else "gpt-6.1-sol"
+        if not self.embedding_model_name:
+            self.embedding_model_name = "text-embedding-005" if self.embedding_provider == "google" else "text-embedding-3-small"
         if not self.embedding_dimensions:
-            self.embedding_dimensions = 1536 if self.llm_provider == "openai" else 768
+            self.embedding_dimensions = 1536 if self.embedding_provider == "openai" else 768
         return self
 
     # --- Convenience ---

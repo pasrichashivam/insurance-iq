@@ -29,7 +29,8 @@ from logger import GLOBAL_LOGGER as log
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    log.info("Insurance-IQ starting", mode=settings.app_mode, llm=settings.llm_model_name)
+    log.info("Insurance-IQ starting", mode=settings.app_mode, llm=settings.llm_model_name,
+              embeddings=settings.embedding_model_name, embedding_dimensions=settings.embedding_dimensions)
     yield  # the app runs here
     # Shutdown (cloud mode only): flush logs to GCS, because Cloud Run's disk disappears
     _LOGGER_INSTANCE.flush_to_gcs()
