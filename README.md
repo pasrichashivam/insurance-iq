@@ -276,8 +276,8 @@ flowchart LR
 #### Question And Response
 <img src="./assets/data_explorer.png" width="1000">
 
-## 2. Setup Environment & Run.
-This guide runs the project **locally only**: vectors are stored in Chroma on disk and no Google Cloud project is needed.
+## 2. Local Setup Environment & Run
+This guide runs the project **locally**: vectors are stored in Chroma on disk and no Google Cloud project is needed.
 
 ### 1. Setup to run project locally
 
@@ -346,6 +346,7 @@ The numbers in the PDFs match the database tables, so RAG answers and tool resul
 1. **Run the backend**
 
 API docs are available at http://localhost:8080/docs
+    
     ```powershell
         uv run uvicorn api.main:app --app-dir backend --reload --port 8080
     ```
@@ -361,7 +362,139 @@ API docs are available at http://localhost:8080/docs
 > **First-run step:** open **Index Documents** and click *Index Stored Documents* and upload the PDF files we have in `sample_docs` and click Initialize Ingestion.  <br>
 >This embeds the 15 PDFs so Q&A and the agents' guideline search work. The SQL, coverage, fraud and compliance tools work without it.
 
-## Sample questions used for testing system
+## 3. Setup and Deploy to GCP
+If you are moving this codebase to an entirely new GCP project where nothing has been configured, follow these exact manual steps once. After this initial setup, the GitHub Action will fully manage the project for you.
+
+### Step 1: Create the Project and Enable Billing
+
+1. Go to the [Google Cloud Console](https://console.cloud.google.com/).
+2. Create a new project (e.g., `meridian-ai-prod`).
+3. Link an active Billing Account to the project.
+
+> [!IMPORTANT]
+> Cloud Run and Vertex AI require active billing to function. The deployment pipeline will fail silently without it.
+
+### Step 2: Create a Powerful Service Account
+
+The GitHub Action acts as a "robot administrator". It needs permission to enable APIs, create storage buckets, provision vector indexes, and deploy services.
+
+Open Google Cloud Shell (or your local terminal authenticated to your account) and run:
+
+```bash
+# Set your active project
+export PROJECT_ID="meridian-ai-prod"
+gcloud config set project $PROJECT_ID
+
+# Create the GitHub Deployer service account
+gcloud iam service-accounts create github-deployer \
+  --display-name="GitHub Actions Deployer" \
+  --project=$PROJECT_ID
+
+# Grant the "Editor" role so it can build infrastructure
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+  --member="serviceAccount:github-deployer@${PROJECT_ID}.iam.gserviceaccount.com" \
+  --role="roles/editor"
+
+# Grant IAM Admin role so it can manage service-level permissions
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+  --member="serviceAccount:github-deployer@${PROJECT_ID}.iam.gserviceaccount.com" \
+  --role="roles/resourcemanager.projectIamAdmin"
+
+# Generate the JSON key file
+gcloud iam service-accounts keys create github-deployer-key.json \
+  --iam-account=github-deployer@${PROJECT_ID}.iam.gserviceaccount.com
+```
+
+> [!CAUTION]
+> The `github-deployer-key.json` file contains highly privileged credentials. **Never commit this file to version control.** Store it securely and delete the local copy after adding it to GitHub Secrets.
+
+#### Troubleshooting: "Key creation is not allowed on this service account"
+
+If the last command fails with this error:
+
+```text
+ERROR: (gcloud.iam.service-accounts.keys.create) FAILED_PRECONDITION: Key creation is not allowed on this service account.
+  ...
+    type: constraints/iam.disableServiceAccountKeyCreation
+```
+
+your project belongs to a Google Cloud **Organization** that blocks service account keys by default (the `iam.disableServiceAccountKeyCreation` organization policy). You need to switch that policy off for your project.
+
+Changing it requires the **Organization Policy Administrator** role (`roles/orgpolicy.policyAdmin`). This role **cannot be granted at the project level** (you get an `INVALID_ARGUMENT` error if you try). It must be granted on the Organization, even though you only change the policy for one project.
+
+**1. Find your Organization ID.** Copy the numeric `ID` from the output:
+
+```bash
+gcloud organizations list
+```
+
+**2. Grant yourself the role on the Organization** (replace `YOUR_ORGANIZATION_ID` and `YOUR_EMAIL`):
+
+```bash
+gcloud organizations add-iam-policy-binding YOUR_ORGANIZATION_ID \
+  --member="user:YOUR_EMAIL" \
+  --role="roles/orgpolicy.policyAdmin"
+```
+
+**3. Turn off the policy for your project.** Wait about 60 seconds for the role to take effect, then run:
+
+```bash
+gcloud resource-manager org-policies disable-enforce \
+  iam.disableServiceAccountKeyCreation \
+  --project=$PROJECT_ID
+```
+
+**4. Create the JSON key again:**
+
+```bash
+gcloud iam service-accounts keys create github-deployer-key.json \
+  --iam-account=github-deployer@${PROJECT_ID}.iam.gserviceaccount.com
+```
+
+> [!NOTE]
+> If Step 2 fails with "permission denied", your account is not an Organization Administrator and cannot change Organization IAM. Ask the person who manages your Google Cloud Organization to run Step 2 for you, or to set up [Workload Identity Federation for GitHub](https://github.com/google-github-actions/auth#workload-identity-federation-through-a-service-account), which needs no key file at all.
+
+> [!TIP]
+> Once the key is created you can turn the policy back on with `gcloud resource-manager org-policies enable-enforce iam.disableServiceAccountKeyCreation --project=$PROJECT_ID`. The key you already made keeps working; only new keys are blocked.
+
+### Step 3: Configure GitHub Secrets
+
+Navigate to your GitHub repository → **Settings** → **Secrets and variables** → **Actions** → **New repository secret**.
+
+Add the following three secrets:
+
+| Secret Name | Value |
+|---|---|
+| `GCP_PROJECT_ID` | Your new project ID (e.g., `meridian-ai-prod`) |
+| `GCP_CREDENTIALS_JSON` | The entire contents of `github-deployer-key.json` |
+| `GOOGLE_API_KEY` | Your Gemini API key from [AI Studio](https://aistudio.google.com/apikey) (starts with `AI`, 39 characters) |
+
+### Step 4: Trigger the Pipeline
+
+Push your code to the `main` branch (or manually trigger the workflow via the **Actions** tab).
+
+```bash
+git add .
+git commit -m "<Commit Message>"
+git push
+```
+
+The GitHub Action ([.github/workflows/deploy.yml](.github/workflows/deploy.yml)) will now automatically:
+
+- ✅ Enable all necessary GCP APIs natively.
+- ✅ Provision the Cloud Storage buckets.
+- ✅ Create the Vertex AI Vector Search Index & Endpoint (expect ~30+ min on first run).
+- ✅ Inject your `GOOGLE_API_KEY` into GCP Secret Manager.
+- ✅ Grant the build and Cloud Run service account the permissions it needs (Secret Manager, Cloud Build, Vertex AI, Cloud Storage).
+- ✅ Build the Docker image and push to Artifact Registry.
+- ✅ Deploy the Cloud Run service with public access.
+
+> [!NOTE]
+> The very first deployment can take 30–45 minutes due to Vector Search index creation. Subsequent deployments typically complete in 3–5 minutes.
+
+Once complete, the Action logs will print your live Cloud Run URL. Your application is now fully automated and live! 🚀
+
+## 4. Sample questions used for testing system
 
 ### 1. Q&A | Companies internal documents and state policies | (RAG over PDFs)
 
