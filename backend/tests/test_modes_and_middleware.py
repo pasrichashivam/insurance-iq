@@ -52,6 +52,26 @@ def test_cloud_mode_lists_missing_settings(monkeypatch):
         vector_store.get_vector_store.cache_clear()
 
 
+def test_providers_are_independent_and_gemini_is_alias(monkeypatch):
+    monkeypatch.setenv("LLM_PROVIDER", "gemini")
+    monkeypatch.setenv("EMBEDDING_PROVIDER", "openai")
+    monkeypatch.setenv("APP_MODE", "cloud")
+    for name in ("LLM_MODEL_NAME", "EMBEDDING_MODEL_NAME", "EMBEDDING_DIMENSIONS"):
+        monkeypatch.delenv(name, raising=False)
+    s = Settings(_env_file=None)
+    assert (s.llm_provider, s.embedding_provider) == ("google", "openai")
+    assert s.llm_model_name == "gemini-3.8-flash"
+    assert s.embedding_model_name == "text-embedding-3-small"
+    assert s.embedding_dimensions == 1536
+
+    monkeypatch.setenv("LLM_PROVIDER", "openai")
+    monkeypatch.setenv("EMBEDDING_PROVIDER", "google")
+    s = Settings(_env_file=None)
+    assert s.llm_model_name == "gpt-6.1-sol"
+    assert s.embedding_model_name == "text-embedding-005"
+    assert s.embedding_dimensions == 768
+
+
 def test_missing_api_key_gives_503_not_500(monkeypatch):
     from rag import llm
 
@@ -68,7 +88,7 @@ def test_missing_api_key_gives_503_not_500(monkeypatch):
 def test_gemini_provider_needs_google_key(monkeypatch):
     from rag import llm
 
-    monkeypatch.setattr(settings, "llm_provider", "gemini")
+    monkeypatch.setattr(settings, "llm_provider", "google")
     monkeypatch.setattr(settings, "GOOGLE_API_KEY", "")
     llm.get_llm.cache_clear()
     try:

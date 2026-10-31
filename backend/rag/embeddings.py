@@ -1,16 +1,14 @@
 """Text -> vector conversion, used both when indexing documents and when searching.
 
-The SAME model must be used for indexing and for querying, so the model follows APP_MODE:
+The provider is chosen with EMBEDDING_PROVIDER (defaults to LLM_PROVIDER), independent of APP_MODE:
 
-    local  -> text-embedding-3-small (OpenAI, default) or gemini-embedding-001 (LLM_PROVIDER=gemini)
-              Switching provider changes the vectors: re-index your documents.
-    cloud  -> text-embedding-005 through Vertex AI (Google Cloud credentials)
+    openai -> text-embedding-3-small (OPENAI_API_KEY)
+    google -> text-embedding-005 on Vertex AI when APP_MODE=cloud (Google Cloud credentials),
+              gemini-embedding-001 on the Gemini API when APP_MODE=local (GOOGLE_API_KEY)
 
-Both produce 768-dimensional vectors. In cloud mode that number is fixed by the
-Vector Search index (see .github/workflows/deploy.yml).
-
-LangChain v1 note: `VertexAIEmbeddings` is deprecated. `GoogleGenerativeAIEmbeddings`
-covers both the Gemini API and Vertex AI (vertexai=True), so one class serves both modes.
+All vectors are EMBEDDING_DIMENSIONS long: 768 for google, 1536 for openai (unless overridden).
+The Vertex AI Vector Search index is created with 768 (see .github/workflows/deploy.yml), so use
+EMBEDDING_PROVIDER=google in cloud mode, or recreate the index with 1536 dimensions for openai.
 """
 from functools import lru_cache
 
@@ -22,11 +20,22 @@ from exceptions import ConfigurationError
 
 @lru_cache(maxsize=1)
 def get_embeddings() -> Embeddings:
-    if settings.is_cloud:
-        from langchain_google_genai import GoogleGenerativeAIEmbeddings
+    if settings.embedding_provider == "openai":
+        if not settings.OPENAI_API_KEY:
+            raise ConfigurationError("EMBEDDING_PROVIDER=openai needs OPENAI_API_KEY in .env.")
+        from langchain_openai import OpenAIEmbeddings
 
+        return OpenAIEmbeddings(
+            model=settings.embedding_model_name,
+            api_key=settings.OPENAI_API_KEY,
+            dimensions=settings.embedding_dimensions,
+        )
+
+    from langchain_google_genai import GoogleGenerativeAIEmbeddings
+
+    if settings.is_cloud:
         if not settings.GCP_PROJECT:
-            raise ConfigurationError("APP_MODE=cloud needs GCP_PROJECT_ID for Vertex AI embeddings.")
+            raise ConfigurationError("APP_MODE=cloud with EMBEDDING_PROVIDER=google needs GCP_PROJECT_ID.")
         return GoogleGenerativeAIEmbeddings(
             model=settings.embedding_model_name,
             vertexai=True,
@@ -35,23 +44,10 @@ def get_embeddings() -> Embeddings:
             output_dimensionality=settings.embedding_dimensions,
         )
 
-    if settings.llm_provider == "openai":
-        if not settings.OPENAI_API_KEY:
-            raise ConfigurationError("APP_MODE=local with LLM_PROVIDER=openai needs OPENAI_API_KEY in .env for embeddings.")
-        from langchain_openai import OpenAIEmbeddings
-
-        return OpenAIEmbeddings(
-            model=settings.local_embedding_model_name,
-            api_key=settings.OPENAI_API_KEY,
-            dimensions=settings.embedding_dimensions,
-        )
-
     if not settings.GOOGLE_API_KEY:
-        raise ConfigurationError("APP_MODE=local with LLM_PROVIDER=gemini needs GOOGLE_API_KEY in .env for embeddings.")
-    from langchain_google_genai import GoogleGenerativeAIEmbeddings
-
+        raise ConfigurationError("EMBEDDING_PROVIDER=google needs GOOGLE_API_KEY in .env.")
     return GoogleGenerativeAIEmbeddings(
-        model=settings.local_embedding_model_name,
+        model=settings.embedding_model_name,
         google_api_key=settings.GOOGLE_API_KEY,
         output_dimensionality=settings.embedding_dimensions,
     )

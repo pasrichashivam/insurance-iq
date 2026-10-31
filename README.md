@@ -306,9 +306,10 @@ This guide runs the project **locally only**: vectors are stored in Chroma on di
     | Setting | What to set |
     |---|---|
     | `APP_MODE` | Keep `local` |
-    | `LLM_PROVIDER` | `openai` (default) |
-    | `OPENAI_API_KEY` | The key for the provider you chose |
-    | `LLM_MODEL_NAME`, `LOCAL_EMBEDDING_MODEL_NAME` | Optional model overrides (defaults: `gpt-6.1-sol` / `text-embedding-3-small` for OpenAI) |
+    | `LLM_PROVIDER` | `openai` (default) or `google` |
+    | `EMBEDDING_PROVIDER` | `openai` or `google`; empty = same as `LLM_PROVIDER` |
+    | `OPENAI_API_KEY` / `GOOGLE_API_KEY` | The key(s) for the provider(s) you chose (in `cloud` mode Google uses Vertex AI credentials instead) |
+    | `LLM_MODEL_NAME`, `EMBEDDING_MODEL_NAME` | Optional overrides (defaults: `gpt-6.1-sol` / `text-embedding-3-small` for OpenAI; `gemini-3.8-flash` / `text-embedding-005` for Google; local Gemini API uses `gemini-embedding-001`). Changing the embedding provider requires re-indexing |
 
 ### 2. Insurance Company Synthetic Data
 The data for the fictional Cardinal Ridge Insurance Group is **already committed**, so there is nothing to generate:

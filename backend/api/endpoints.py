@@ -83,7 +83,9 @@ def system_status():
     hours, remainder = divmod(uptime_seconds, 3600)
     minutes, seconds = divmod(remainder, 60)
     cloud = settings.is_cloud
-    provider = "OpenAI" if settings.llm_provider == "openai" else "Gemini"
+    names = {"openai": "OpenAI", "google": "Gemini"}
+    provider = names[settings.llm_provider]
+    emb_provider = names[settings.embedding_provider]
     return {
         "mode": settings.app_mode,
         "backend": {
@@ -108,13 +110,11 @@ def system_status():
             "stream_update": cloud,
         },
         "models": {
-            "embedding": settings.embedding_model_name if cloud else settings.local_embedding_model_name,
+            "embedding": settings.embedding_model_name,
             "llm": settings.llm_model_name,
             "llm_provider": settings.llm_provider,
-            "llm_framework": (
-                f"{provider} API (chat) + Vertex AI (embeddings) via LangChain v1" if cloud
-                else f"{provider} API (chat + embeddings) via LangChain v1"
-            ),
+            "embedding_provider": settings.embedding_provider,
+            "llm_framework": f"{provider} (chat) + {emb_provider} (embeddings) via LangChain v1",
         },
         "ingestion": {
             "uploads_this_session": len(_upload_history),
